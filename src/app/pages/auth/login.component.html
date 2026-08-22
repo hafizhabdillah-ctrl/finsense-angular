@@ -1,0 +1,17 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="brand">Fin<span>Sense</span></div>
+    <p class="eyebrow">MANAJEMEN UMKM</p>
+    <h1>Selamat datang</h1>
+    <p class="muted">Masuk ke dashboard manajemen bisnis Anda.</p>
+    <form (ngSubmit)="submit()">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" [(ngModel)]="email" required autocomplete="email">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" [(ngModel)]="password" required autocomplete="current-password">
+      @if (error) { <p class="error">{{ error }}</p> }
+      <button type="submit" [disabled]="submitting">{{ submitting ? 'Memproses...' : 'Masuk' }}</button>
+    </form>
+    <a routerLink="/register">Belum punya akun? Daftar di sini</a>
+  </section>
+</main>

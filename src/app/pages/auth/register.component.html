@@ -1,0 +1,35 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="brand">Fin<span>Sense</span></div>
+    <p class="eyebrow">MANAJEMEN UMKM</p>
+    <h1>Buat akun baru</h1>
+    <p class="muted">Buat akun untuk mulai mengelola bisnis Anda.</p>
+
+    <form (ngSubmit)="submit()">
+      <label for="fullName">Nama Lengkap</label>
+      <input id="fullName" name="fullName" type="text" [(ngModel)]="fullName" placeholder="Masukkan nama lengkap Anda" required autocomplete="name">
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" [(ngModel)]="email" placeholder="Masukkan email Anda" required autocomplete="email">
+
+      <label for="password">Password</label>
+      <div class="password-field">
+        <input id="password" name="password" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="Masukkan password Anda" required minlength="6" autocomplete="new-password">
+        <button type="button" class="toggle-password" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Sembunyikan password' : 'Tampilkan password'">{{ showPassword ? 'Sembunyikan' : 'Lihat' }}</button>
+      </div>
+      <small>Password minimal 6 karakter.</small>
+
+      <label for="confirmPassword">Konfirmasi Password</label>
+      <div class="password-field">
+        <input id="confirmPassword" name="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" placeholder="Konfirmasi password Anda" required autocomplete="new-password">
+        <button type="button" class="toggle-password" (click)="showConfirmPassword = !showConfirmPassword" [attr.aria-label]="showConfirmPassword ? 'Sembunyikan password' : 'Tampilkan password'">{{ showConfirmPassword ? 'Sembunyikan' : 'Lihat' }}</button>
+      </div>
+
+      @if (error) { <p class="error">{{ error }}</p> }
+      <button class="submit-button" type="submit" [disabled]="submitting">{{ submitting ? 'Memproses...' : 'Daftar akun' }}</button>
+    </form>
+
+    <div class="divider"><span>atau</span></div>
+    <p class="footer-text">Sudah punya akun? <a routerLink="/login">Login di sini</a></p>
+  </section>
+</main>
