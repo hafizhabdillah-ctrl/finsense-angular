@@ -1,50 +1,265 @@
 <div class="workspace">
   <aside class="sidebar">
-    <div class="brand"><span class="brand-mark">↗</span> Fin<span>Sense</span></div>
-    <a class="new-transaction" routerLink="/new">⊕ <span>New Transaction</span></a>
+    <div class="brand">
+      <span class="brand-mark">↗</span> Fin
+      <span>Sense</span>
+    </div>
+    <a class="new-transaction" routerLink="/new">⊕ 
+      <span>New Transaction</span>
+    </a>
     <nav>
       @for (link of links; track link.path) {
-        <a [routerLink]="link.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><b>{{ link.icon }}</b><span>{{ link.label }}</span></a>
+        <a [routerLink]="link.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><b>{{ link.icon }}</b>
+          <span>{{ link.label }}</span>
+        </a>
       }
     </nav>
-    <div class="sidebar-bottom"><a>❔ Bantuan</a><button (click)="logout()">⇥ Keluar</button></div>
+    <div class="sidebar-bottom">
+      <a>❔ Bantuan</a>
+      <button (click)="logout()">⇥ Keluar</button>
+    </div>
   </aside>
 
   <main class="content">
-    <header class="topbar"><button class="back-button" aria-label="Kembali" (click)="router.navigate(['/dashboard'])">←</button><div class="top-actions"><button class="settings-button" aria-label="Buka pengaturan" (click)="settingsOpen = true">⚙</button><span class="top-divider"></span><strong class="username">{{ auth.user()?.full_name || auth.user()?.email || 'User' }}</strong></div></header>
+    <header class="topbar">
+      <button class="back-button" aria-label="Kembali" (click)="router.navigate(['/dashboard'])">←</button>
+      <div class="top-actions">
+        <button class="settings-button" aria-label="Buka pengaturan" (click)="settingsOpen = true">⚙</button>
+        <span class="top-divider"></span>
+        <strong class="username">{{ auth.user()?.full_name || auth.user()?.email || 'User' }}</strong>
+      </div>
+    </header>
 
     @if (title === 'Stok Produk') {
-      <section class="page-heading"><h1 class="font-bold">Manajemen Stok</h1><button routerLink="/new">⊕ Tambah Barang</button></section>
-      <section class="stat-grid"><article><small>TOTAL BARANG AKTIF</small><strong>{{ products.length }} <em>Barang</em></strong></article><article><small>PREDIKSI RESTOCK</small><strong>{{ lowStock }} <em>Barang</em></strong></article><article><small>STOK MENIPIS</small><strong>{{ lowStock }} <em>Barang</em></strong></article></section>
-      <div class="search-row"><input [(ngModel)]="search" placeholder="⌕  Cari berdasarkan nama atau SKU..."></div>
-      <div class="table-wrap"><table><thead><tr><th>No.</th><th>Nama Produk</th><th>SKU</th><th>Stok</th><th>Status</th></tr></thead><tbody>@for (product of filteredProducts; track product.id; let index = $index) {<tr><td>{{ index + 1 }}</td><td class="strong">{{ product.name }}</td><td>{{ product.sku }}</td><td>{{ product.stock }}</td><td><span [class.warning]="product.stock <= product.min_stock" [class.safe]="product.stock > product.min_stock">{{ product.stock <= product.min_stock ? 'Menipis' : 'Aman' }}</span></td></tr>} @empty {<tr><td colspan="5" class="empty-cell">{{ loading ? 'Memuat data stok...' : (error || 'Belum ada data produk') }}</td></tr>}</tbody></table></div>
+      <section class="page-heading">
+        <h1 class="font-bold">Manajemen Stok</h1>
+        <button routerLink="/new">⊕ Tambah Barang</button>
+      </section>
+
+      <section class="stat-grid">
+        <article>
+          <small>TOTAL BARANG AKTIF</small>
+          <strong>{{ products.length }} <em>Barang</em></strong>
+        </article>
+        <article>
+          <small>PREDIKSI RESTOCK</small>
+          <strong>{{ lowStock }} <em>Barang</em></strong>
+        </article>
+        <article>
+          <small>STOK MENIPIS</small><strong>{{ lowStock }} <em>Barang</em></strong>
+        </article>
+      </section>
+
+      <div class="search-row">
+        <input [(ngModel)]="search" placeholder="⌕  Cari berdasarkan nama atau SKU...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Nama Produk</th>
+              <th>SKU</th>
+              <th>Stok</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>@for (product of filteredProducts; track product.id; let index = $index) {
+            <tr>
+              <td>{{ index + 1 }}</td>
+              <td class="strong">{{ product.name }}</td>
+              <td>{{ product.sku }}</td>
+              <td>{{ product.stock }}</td>
+              <td>
+                <span [class.warning]="product.stock <= product.min_stock" [class.safe]="product.stock > product.min_stock">{{ product.stock <= product.min_stock ? 'Menipis' : 'Aman' }}</span>
+              </td>
+            </tr>} @empty {
+            <tr>
+              <td colspan="5" class="empty-cell">{{ loading ? 'Memuat data stok...' : (error || 'Belum ada data produk') }}</td>
+            </tr>}
+          </tbody>
+        </table>
+      </div>
       <p class="table-note">Menampilkan 1-{{ filteredProducts.length }} dari {{ filteredProducts.length }} produk</p>
     }
 
     @if (title === 'Log Aktivitas') {
-      <section class="page-heading"><h1 class="font-bold">Log Barang</h1><button routerLink="/new">⊕ Tambah Log</button></section>
-      <section class="stat-grid"><article><small>TOTAL TRANSAKSI HARI INI</small><strong>{{ logs.length }} <em>Transaksi</em></strong></article><article><small>STOK MASUK</small><strong>{{ totalStockIn }} <em>Barang</em></strong></article><article><small>STOK KELUAR</small><strong>{{ totalStockOut }} <em>Barang</em></strong></article></section>
-      <div class="search-row"><input [(ngModel)]="search" placeholder="⌕  Cari berdasarkan nama produk atau SKU..."></div>
-      <div class="table-wrap wide"><table><thead><tr><th>Waktu</th><th>Produk</th><th>SKU</th><th>Tipe</th><th>Jumlah</th><th>Oleh</th><th>Status</th></tr></thead><tbody>@for (log of filteredLogs; track log.id) {<tr><td>{{ log.created_at | date:'yyyy-MM-dd HH:mm' }}</td><td class="strong">{{ log.product?.name || '-' }}</td><td>{{ log.product?.sku || '-' }}</td><td>{{ log.type === 'in' ? 'Stok Masuk' : log.type === 'out' ? 'Stok Keluar' : 'Penyesuaian Manual' }}</td><td>{{ log.quantity }}</td><td>{{ log.operator }}</td><td>{{ log.status === 'completed' ? 'Selesai' : 'Menunggu Audit' }}</td></tr>} @empty {<tr><td colspan="7" class="empty-cell">{{ loading ? 'Memuat data log...' : (error || 'Belum ada log inventori') }}</td></tr>}</tbody></table></div>
+      <section class="page-heading">
+        <h1 class="font-bold">Log Barang</h1>
+        <button routerLink="/new">⊕ Tambah Log</button>
+      </section>
+      <section class="stat-grid">
+        <article>
+          <small>TOTAL TRANSAKSI HARI INI</small>
+          <strong>{{ logs.length }} <em>Transaksi</em></strong>
+        </article>
+        <article>
+          <small>STOK MASUK</small><strong>{{ totalStockIn }} <em>Barang</em></strong>
+        </article>
+        <article>
+          <small>STOK KELUAR</small><strong>{{ totalStockOut }} <em>Barang</em></strong>
+        </article>
+      </section>
+
+      <div class="search-row">
+        <input [(ngModel)]="search" placeholder="⌕  Cari berdasarkan nama produk atau SKU..."></div>
+      <div class="table-wrap wide">
+        <table>
+          <thead>
+            <tr>
+              <th>Waktu</th>
+              <th>Produk</th>
+              <th>SKU</th>
+              <th>Tipe</th>
+              <th>Jumlah</th>
+              <th>Oleh</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>@for (log of filteredLogs; track log.id) {
+            <tr>
+              <td>{{ log.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td class="strong">{{ log.product?.name || '-' }}</td>
+              <td>{{ log.product?.sku || '-' }}</td>
+              <td>{{ log.type === 'in' ? 'Stok Masuk' : log.type === 'out' ? 'Stok Keluar' : 'Penyesuaian Manual' }}</td>
+              <td>{{ log.quantity }}</td>
+              <td>{{ log.operator }}</td>
+              <td>{{ log.status === 'completed' ? 'Selesai' : 'Menunggu Audit' }}</td>
+            </tr>} @empty {
+            <tr>
+              <td colspan="7" class="empty-cell">{{ loading ? 'Memuat data log...' : (error || 'Belum ada log inventori') }}</td>
+            </tr>}
+            </tbody>
+          </table>
+        </div>
     }
 
     @if (title === 'Transaksi') {
-      <section class="mx-auto px-6 py-5 font-poppins"><div class="flex items-center justify-between"><h1 class="text-[22px] font-bold text-slate-950">Catatan keuangan</h1><button routerLink="/new" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Transaksi</button></div>
-        <section class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2"><article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm"><small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PEMASUKAN BULAN INI</small><strong class="mt-1 block text-xl text-[#063c57]">{{ totalIncome | currency:'IDR':'symbol':'1.0-0' }}</strong></article><article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm"><small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PENGELUARAN BULAN INI</small><strong class="mt-1 block text-xl text-[#063c57]">{{ totalExpense | currency:'IDR':'symbol':'1.0-0' }}</strong></article></section>
-        <div class="mt-4 overflow-x-auto rounded border border-slate-200 bg-white"><table class="w-full min-w-[760px] border-collapse text-xs"><thead class="bg-[#063c57] text-white"><tr><th class="p-3">No.</th><th class="p-3">Tanggal</th><th class="p-3">Kategori</th><th class="p-3">Keterangan</th><th class="p-3">Nominal</th><th class="p-3">Tipe</th></tr></thead><tbody>@for (transaction of transactions; track transaction.id; let index = $index) {<tr class="border-b border-slate-200 text-center text-slate-600"><td class="p-3">{{ index + 1 }}</td><td class="p-3">{{ transaction.transaction_date | date:'dd/MM/yyyy' }}</td><td class="p-3">{{ transaction.category?.name || '-' }}</td><td class="p-3">{{ transaction.description || '-' }}</td><td class="p-3 font-semibold">{{ transaction.amount | currency:'IDR':'symbol':'1.0-0' }}</td><td class="p-3" [class.text-emerald-600]="transaction.type === 'income'" [class.text-red-600]="transaction.type === 'expense'">{{ transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}</td></tr>} @empty {<tr><td colspan="6" class="p-12 text-center text-slate-400">{{ loading ? 'Memuat catatan transaksi...' : (error || 'Belum ada catatan transaksi.') }}</td></tr>}</tbody></table></div><p class="mt-2 text-xs text-slate-500">Menampilkan 0-{{ transactions.length }} dari {{ transactions.length }} transaksi</p>
+      <section class="mx-auto px-6 py-5 font-poppins">
+        <div class="flex items-center justify-between">
+          <h1 class="text-[22px] font-bold text-slate-950">Catatan keuangan</h1>
+          <button routerLink="/new" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Transaksi</button>
+        </div>
+        <section class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+            <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PEMASUKAN BULAN INI</small>
+            <strong class="mt-1 block text-xl text-[#063c57]">{{ totalIncome | currency:'IDR':'symbol':'1.0-0' }}</strong>
+          </article>
+          <article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+            <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PENGELUARAN BULAN INI</small>
+            <strong class="mt-1 block text-xl text-[#063c57]">{{ totalExpense | currency:'IDR':'symbol':'1.0-0' }}</strong>
+          </article>
+        </section>
+        <div class="mt-4 overflow-x-auto rounded border border-slate-200 bg-white">
+          <table class="w-full min-w-[760px] border-collapse text-xs">
+            <thead class="bg-[#063c57] text-white">
+              <tr>
+                <th class="p-3">No.</th>
+                <th class="p-3">Tanggal</th>
+                <th class="p-3">Kategori</th>
+                <th class="p-3">Keterangan</th>
+                <th class="p-3">Nominal</th>
+                <th class="p-3">Tipe</th>
+              </tr>
+            </thead>
+            <tbody>@for (transaction of transactions; track transaction.id; let index = $index) {
+              <tr class="border-b border-slate-200 text-center text-slate-600">
+                <td class="p-3">{{ index + 1 }}</td>
+                <td class="p-3">{{ transaction.transaction_date | date:'dd/MM/yyyy' }}</td>
+                <td class="p-3">{{ transaction.category?.name || '-' }}</td>
+                <td class="p-3">{{ transaction.description || '-' }}</td>
+                <td class="p-3 font-semibold">{{ transaction.amount | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td class="p-3" [class.text-emerald-600]="transaction.type === 'income'" [class.text-red-600]="transaction.type === 'expense'">{{ transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}</td>
+              </tr>} @empty {
+                <tr>
+                  <td colspan="6" class="p-12 text-center text-slate-400">{{ loading ? 'Memuat catatan transaksi...' : (error || 'Belum ada catatan transaksi.') }}</td>
+                </tr>}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-2 text-xs text-slate-500">Menampilkan 0-{{ transactions.length }} dari {{ transactions.length }} transaksi</p>
       </section>
     }
 
     @if (title === 'Utang Piutang') {
-      <section class="mx-auto px-6 py-5 font-poppins"><div class="flex items-center justify-between"><h1 class="text-[22px] font-bold text-slate-950">Catatan Hutang</h1><button routerLink="/new" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Hutang baru</button></div>
-        <article class="mt-4 w-full rounded-md border border-slate-200 bg-white p-3 shadow-sm md:w-1/3"><small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PIUTANG AKTIF</small><strong class="mt-1 block text-xl text-[#063c57]">{{ totalDebt | currency:'IDR':'symbol':'1.0-0' }}</strong></article>
-        <div class="mt-4 overflow-x-auto rounded border border-slate-200 bg-white"><table class="w-full min-w-[760px] border-collapse text-xs"><thead class="bg-[#063c57] text-white"><tr><th class="p-3">No.</th><th class="p-3">Nama Pelanggan</th><th class="p-3">Total Hutang</th><th class="p-3">Sudah Dibayar</th><th class="p-3">Jatuh Tempo</th><th class="p-3">Status</th></tr></thead><tbody>@for (debt of debts; track debt.id; let index = $index) {<tr class="border-b border-slate-200 text-center text-slate-600"><td class="p-3">{{ index + 1 }}</td><td class="p-3 text-left font-semibold text-slate-800">{{ debt.customer_name }}</td><td class="p-3">{{ debt.total_debt | currency:'IDR':'symbol':'1.0-0' }}</td><td class="p-3">{{ debt.paid_amount | currency:'IDR':'symbol':'1.0-0' }}</td><td class="p-3">{{ debt.due_date | date:'dd/MM/yyyy' }}</td><td class="p-3"><span class="rounded-full px-2 py-1 text-[10px] font-semibold" [class.bg-red-100]="debt.status === 'overdue'" [class.text-red-700]="debt.status === 'overdue'" [class.bg-amber-100]="debt.status !== 'overdue'" [class.text-amber-700]="debt.status !== 'overdue'">{{ debt.status === 'overdue' ? 'Terlambat' : debt.status === 'paid' ? 'Lunas' : 'Belum Lunas' }}</span></td></tr>} @empty {<tr><td colspan="6" class="p-12 text-center text-slate-400">{{ loading ? 'Memuat data hutang...' : (error || 'Belum ada data hutang') }}</td></tr>}</tbody></table></div><p class="mt-2 text-xs text-slate-500">Menampilkan 0-{{ debts.length }} dari {{ debts.length }} hutang</p>
+      <section class="mx-auto px-6 py-5 font-poppins">
+        <div class="flex items-center justify-between">
+          <h1 class="text-[22px] font-bold text-slate-950">Catatan Hutang</h1>
+          <button routerLink="/new" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Hutang baru</button>
+        </div>
+        <article class="mt-4 w-full rounded-md border border-slate-200 bg-white p-3 shadow-sm md:w-1/3">
+          <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PIUTANG AKTIF</small>
+          <strong class="mt-1 block text-xl text-[#063c57]">{{ totalDebt | currency:'IDR':'symbol':'1.0-0' }}</strong>
+        </article>
+        <div class="mt-4 overflow-x-auto rounded border border-slate-200 bg-white">
+          <table class="w-full min-w-[760px] border-collapse text-xs">
+            <thead class="bg-[#063c57] text-white">
+              <tr>
+                <th class="p-3">No.</th>
+                <th class="p-3">Nama Pelanggan</th>
+                <th class="p-3">Total Hutang</th>
+                <th class="p-3">Sudah Dibayar</th>
+                <th class="p-3">Jatuh Tempo</th>
+                <th class="p-3">Status</th></tr>
+            </thead>
+              <tbody>@for (debt of debts; track debt.id; let index = $index) {
+                <tr class="border-b border-slate-200 text-center text-slate-600">
+                  <td class="p-3">{{ index + 1 }}</td>
+                  <td class="p-3 text-left font-semibold text-slate-800">{{ debt.customer_name }}</td>
+                  <td class="p-3">{{ debt.total_debt | currency:'IDR':'symbol':'1.0-0' }}</td>
+                  <td class="p-3">{{ debt.paid_amount | currency:'IDR':'symbol':'1.0-0' }}</td>
+                  <td class="p-3">{{ debt.due_date | date:'dd/MM/yyyy' }}</td>
+                  <td class="p-3">
+                    <span class="rounded-full px-2 py-1 text-[10px] font-semibold" [class.bg-red-100]="debt.status === 'overdue'" [class.text-red-700]="debt.status === 'overdue'" [class.bg-amber-100]="debt.status !== 'overdue'" [class.text-amber-700]="debt.status !== 'overdue'">{{ debt.status === 'overdue' ? 'Terlambat' : debt.status === 'paid' ? 'Lunas' : 'Belum Lunas' }}</span>
+                  </td>
+                </tr>} @empty {
+                  <tr>
+                    <td colspan="6" class="p-12 text-center text-slate-400">{{ loading ? 'Memuat data hutang...' : (error || 'Belum ada data hutang') }}</td>
+                  </tr>}
+              </tbody>
+          </table>
+        </div>
+        <p class="mt-2 text-xs text-slate-500">Menampilkan 0-{{ debts.length }} dari {{ debts.length }} hutang</p>
       </section>
     }
 
     @if (title === 'Point of Sale') {
-      <section class="page-heading"><h1 class="font-bold">Terminal Kasir</h1><button routerLink="/new">⊕ Transaksi Baru</button></section>
-      <div class="pos-layout"><section class="pos-main"><div class="voice-box"><strong>"Pilih produk untuk memulai transaksi"</strong><button class="mic">♩</button><small>Input suara tersedia di aplikasi React</small></div><h2>Produk Sering Dibeli</h2><div class="product-grid">@for (product of products.slice(0, 6); track product.id) {<button class="product-card" (click)="addToCart(product)"><strong>{{ product.name }}</strong><span>{{ product.stock }} {{ product.unit || 'pcs' }}</span><b>{{ product.price | currency:'IDR':'symbol':'1.0-0' }}</b></button>} @empty {<p>{{ loading ? 'Memuat produk...' : (error || 'Belum ada produk') }}</p>}</div></section><aside class="receipt"><h3>Receipt</h3>@for (item of cart; track $index) {<div class="receipt-item"><span>{{ item.name }}</span><b>{{ item.price | currency:'IDR':'symbol':'1.0-0' }}</b><button (click)="removeFromCart($index)">×</button></div>} @empty {<p class="receipt-empty">Keranjang masih kosong</p>}<div class="receipt-total"><span>Total</span><strong>{{ cartTotal() | currency:'IDR':'symbol':'1.0-0' }}</strong></div></aside></div>
+      <section class="page-heading">
+        <h1 class="font-bold">Terminal Kasir</h1>
+        <button routerLink="/new">⊕ Transaksi Baru</button>
+      </section>
+      <div class="pos-layout">
+        <section class="pos-main">
+          <div class="voice-box">
+            <strong>"Pilih produk untuk memulai transaksi"</strong>
+            <button class="mic">♩</button>
+            <small>Input suara tersedia di aplikasi React</small>
+          </div>
+          <h2>Produk Sering Dibeli</h2>
+          <div class="product-grid">
+            @for (product of products.slice(0, 6); track product.id) {
+              <button class="product-card" (click)="addToCart(product)">
+                <strong>{{ product.name }}</strong>
+                <span>{{ product.stock }} {{ product.unit || 'pcs' }}</span>
+                <b>{{ product.price | currency:'IDR':'symbol':'1.0-0' }}</b>
+              </button>} @empty {
+                <p>{{ loading ? 'Memuat produk...' : (error || 'Belum ada produk') }}</p>}
+              </div>
+            </section>
+            <aside class="receipt">
+              <h3>Receipt</h3>@for (item of cart; track $index) {
+                <div class="receipt-item">
+                  <span>{{ item.name }}</span>
+                  <b>{{ item.price | currency:'IDR':'symbol':'1.0-0' }}</b>
+                  <button (click)="removeFromCart($index)">×</button>
+                </div>} @empty {
+                  <p class="receipt-empty">Keranjang masih kosong</p>}
+                <div class="receipt-total">
+                  <span>Total</span>
+                  <strong>{{ cartTotal() | currency:'IDR':'symbol':'1.0-0' }}</strong>
+                </div>
+            </aside>
+        </div>
     }
   </main>
 </div>
