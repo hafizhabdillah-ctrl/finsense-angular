@@ -27,6 +27,21 @@ exports.getStockLogs = async (req, res) => {
   }
 };
 
+// GET /stock-logs/:id - detail log stok milik user
+exports.getStockLogById = async (req, res) => {
+  try {
+    const log = await prisma.stockLog.findFirst({
+      where: { id: req.params.id, user_id: req.userId },
+      include: { product: { select: { name: true, sku: true } } },
+    });
+    if (!log) return res.status(404).json({ error: 'Log not found' });
+    res.json(log);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 // POST /stock-logs - tambah log manual
 exports.createStockLog = async (req, res) => {
   try {

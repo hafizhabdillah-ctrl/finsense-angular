@@ -15,7 +15,6 @@
       }
     </nav>
     <div class="sidebar-bottom">
-      <a>❔ Bantuan</a>
       <button (click)="logout()">⇥ Keluar</button>
     </div>
   </aside>
@@ -65,7 +64,7 @@
             </tr>
           </thead>
           <tbody>@for (product of filteredProducts; track product.id; let index = $index) {
-            <tr>
+            <tr class="cursor-pointer hover:bg-slate-50" (click)="openDetail(product.id)">
               <td>{{ index + 1 }}</td>
               <td class="strong">{{ product.name }}</td>
               <td>{{ product.sku }}</td>
@@ -117,7 +116,7 @@
             </tr>
           </thead>
           <tbody>@for (log of filteredLogs; track log.id) {
-            <tr>
+            <tr class="cursor-pointer hover:bg-slate-50" (click)="openDetail(log.id)">
               <td>{{ log.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
               <td class="strong">{{ log.product?.name || '-' }}</td>
               <td>{{ log.product?.sku || '-' }}</td>
@@ -163,7 +162,7 @@
               </tr>
             </thead>
             <tbody>@for (transaction of transactions; track transaction.id; let index = $index) {
-              <tr class="border-b border-slate-200 text-center text-slate-600">
+              <tr class="cursor-pointer border-b border-slate-200 text-center text-slate-600 hover:bg-slate-50" (click)="openDetail(transaction.id)">
                 <td class="p-3">{{ index + 1 }}</td>
                 <td class="p-3">{{ transaction.transaction_date | date:'dd/MM/yyyy' }}</td>
                 <td class="p-3">{{ transaction.category?.name || '-' }}</td>
@@ -203,7 +202,7 @@
                 <th class="p-3">Status</th></tr>
             </thead>
               <tbody>@for (debt of debts; track debt.id; let index = $index) {
-                <tr class="border-b border-slate-200 text-center text-slate-600">
+                <tr class="cursor-pointer border-b border-slate-200 text-center text-slate-600 hover:bg-slate-50" (click)="openDetail(debt.id)">
                   <td class="p-3">{{ index + 1 }}</td>
                   <td class="p-3 text-left font-semibold text-slate-800">{{ debt.customer_name }}</td>
                   <td class="p-3">{{ debt.total_debt | currency:'IDR':'symbol':'1.0-0' }}</td>

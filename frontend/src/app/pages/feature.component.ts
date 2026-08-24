@@ -1,16 +1,17 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../core/environment';
 import { AuthService } from '../core/auth.service';
 import { SettingsComponent } from '../components/settings.component';
+import { finalize } from 'rxjs';
 
 interface Product {
   id: string;
   name: string;
-  sku: string;
+  sku?: string;
   stock: number;
   min_stock: number;
   unit?: string;
@@ -52,8 +53,10 @@ interface Debt {
   imports: [FormsModule, RouterLink, RouterLinkActive, DatePipe, CurrencyPipe, SettingsComponent],
   templateUrl: './feature.component.html',
 })
-export class FeatureComponent {
-  readonly title = inject(ActivatedRoute).snapshot.data['title'] as string;
+export class FeatureComponent implements OnInit {
+  private readonly cdr = inject(ChangeDetectorRef);
+  readonly route = inject(ActivatedRoute);
+  title = '';
   readonly http = inject(HttpClient);
   readonly router = inject(Router);
   readonly auth = inject(AuthService);
@@ -61,7 +64,6 @@ export class FeatureComponent {
     { label: 'Dashboard', path: '/dashboard', icon: '▦' },
     { label: 'Catatan Keuangan', path: '/transactions', icon: '▣' },
     { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
-    { label: 'POS Terminal', path: '/pos', icon: '▥' },
     { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
     { label: 'Log Inventori', path: '/logs', icon: '☷' },
   ];
@@ -75,21 +77,39 @@ export class FeatureComponent {
   error = '';
   settingsOpen = false;
 
-  constructor() {
-    if (this.title === 'Stok Produk' || this.title === 'Point of Sale') this.loadProducts();
-    if (this.title === 'Log Aktivitas') this.loadLogs();
-    if (this.title === 'Transaksi') this.loadTransactions();
-    if (this.title === 'Utang Piutang') this.loadDebts();
+  ngOnInit(): void {
+    this.activateFeature(this.route.snapshot.data['title'] as string);
+    this.route.data.subscribe((data) => {
+      const title = data['title'] as string;
+      if (title === this.title) return;
+      this.activateFeature(title);
+    });
+  }
+
+  private activateFeature(title: string): void {
+      this.title = title;
+      this.products = [];
+      this.logs = [];
+      this.transactions = [];
+      this.debts = [];
+      this.search = '';
+      this.error = '';
+      this.loading = true;
+
+      if (this.title === 'Stok Produk') this.loadProducts();
+      if (this.title === 'Log Aktivitas') this.loadLogs();
+      if (this.title === 'Transaksi') this.loadTransactions();
+      if (this.title === 'Utang Piutang') this.loadDebts();
   }
 
   get filteredProducts(): Product[] {
     const query = this.search.toLowerCase().trim();
-    return this.products.filter((product) => !query || product.name.toLowerCase().includes(query) || product.sku.toLowerCase().includes(query));
+    return this.products.filter((product) => !query || product.name.toLowerCase().includes(query) || product.sku?.toLowerCase().includes(query));
   }
 
   get filteredLogs(): StockLog[] {
     const query = this.search.toLowerCase().trim();
-    return this.logs.filter((log) => !query || log.product?.name.toLowerCase().includes(query) || log.product?.sku.toLowerCase().includes(query));
+    return this.logs.filter((log) => !query || log.product?.name.toLowerCase().includes(query) || log.product?.sku?.toLowerCase().includes(query));
   }
 
   get lowStock(): number { return this.products.filter((product) => product.stock <= product.min_stock).length; }
@@ -101,32 +121,36 @@ export class FeatureComponent {
   cartTotal(): number { return this.cart.reduce((total, product) => total + (product.price || 0), 0); }
   addToCart(product: Product): void { if (product.stock > 0) this.cart = [...this.cart, product]; }
   removeFromCart(index: number): void { this.cart = this.cart.filter((_, itemIndex) => itemIndex !== index); }
+  openDetail(id: string): void {
+    const path = this.title === 'Stok Produk' ? 'stocks' : this.title === 'Transaksi' ? 'transactions' : this.title === 'Utang Piutang' ? 'debts' : 'logs';
+    this.router.navigate(['/', path, id]);
+  }
 
   private loadProducts(): void {
-    this.http.get<Product[]>(`${environment.apiUrl}/products`).subscribe({
-      next: (products) => { this.products = products; this.loading = false; },
-      error: () => { this.error = 'Gagal memuat data produk.'; this.loading = false; },
+    this.http.get<Product[]>(`${environment.apiUrl}/products`).pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); })).subscribe({
+      next: (products) => { this.products = products; this.cdr.markForCheck(); },
+      error: () => { this.error = 'Gagal memuat data produk.'; this.cdr.markForCheck(); },
     });
   }
 
   private loadLogs(): void {
-    this.http.get<StockLog[]>(`${environment.apiUrl}/stock-logs`).subscribe({
-      next: (logs) => { this.logs = logs; this.loading = false; },
-      error: () => { this.error = 'Gagal memuat data log inventori.'; this.loading = false; },
+    this.http.get<StockLog[]>(`${environment.apiUrl}/stock-logs`).pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); })).subscribe({
+      next: (logs) => { this.logs = logs; this.cdr.markForCheck(); },
+      error: () => { this.error = 'Gagal memuat data log inventori.'; this.cdr.markForCheck(); },
     });
   }
 
   private loadTransactions(): void {
-    this.http.get<Transaction[]>(`${environment.apiUrl}/transactions`).subscribe({
-      next: (transactions) => { this.transactions = transactions; this.loading = false; },
-      error: () => { this.error = 'Gagal memuat catatan keuangan.'; this.loading = false; },
+    this.http.get<Transaction[]>(`${environment.apiUrl}/transactions`).pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); })).subscribe({
+      next: (transactions) => { this.transactions = transactions; this.cdr.markForCheck(); },
+      error: () => { this.error = 'Gagal memuat catatan keuangan.'; this.cdr.markForCheck(); },
     });
   }
 
   private loadDebts(): void {
-    this.http.get<Debt[]>(`${environment.apiUrl}/debts`).subscribe({
-      next: (debts) => { this.debts = debts; this.loading = false; },
-      error: () => { this.error = 'Gagal memuat data hutang pelanggan.'; this.loading = false; },
+    this.http.get<Debt[]>(`${environment.apiUrl}/debts`).pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); })).subscribe({
+      next: (debts) => { this.debts = debts; this.cdr.markForCheck(); },
+      error: () => { this.error = 'Gagal memuat data hutang pelanggan.'; this.cdr.markForCheck(); },
     });
   }
 

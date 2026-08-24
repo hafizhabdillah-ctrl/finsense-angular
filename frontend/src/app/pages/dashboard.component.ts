@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/auth.service';
@@ -42,6 +42,7 @@ interface BestSeller {
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
+  private readonly cdr = inject(ChangeDetectorRef);
   readonly auth = inject(AuthService);
   readonly http = inject(HttpClient);
   readonly router = inject(Router);
@@ -49,7 +50,6 @@ export class DashboardComponent {
     { label: 'Dashboard', path: '/dashboard', icon: '▦' },
     { label: 'Catatan Keuangan', path: '/transactions', icon: '▣' },
     { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
-    { label: 'POS Terminal', path: '/pos', icon: '▥' },
     { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
     { label: 'Log Inventori', path: '/logs', icon: '☷' },
   ];
@@ -101,10 +101,13 @@ export class DashboardComponent {
       products: this.http.get<DashboardProduct[]>(`${environment.apiUrl}/products`),
       debts: this.http.get<DashboardDebt[]>(`${environment.apiUrl}/debts`),
     }).subscribe({
-      next: (data) => { this.transactions = data.transactions; this.products = data.products; this.debts = data.debts; this.loading = false; },
-      error: () => { this.error = 'Sebagian data dashboard gagal dimuat.'; this.loading = false; },
+      next: (data) => { this.transactions = data.transactions; this.products = data.products; this.debts = data.debts; this.loading = false; this.cdr.markForCheck(); },
+      error: () => { this.error = 'Sebagian data dashboard gagal dimuat.'; this.loading = false; this.cdr.markForCheck(); },
     });
-    this.http.get<{ top_products?: BestSeller[] }>(`${environment.apiUrl}/ai/real-top-products`).subscribe({ next: (data) => this.bestSellers = data.top_products || [] });
+    this.http.get<{ top_products?: BestSeller[] }>(`${environment.apiUrl}/ai/real-top-products`).subscribe({
+      next: (data) => { this.bestSellers = data.top_products || []; this.cdr.markForCheck(); },
+      error: () => { this.cdr.markForCheck(); }
+    });
   }
 
   async logout(): Promise<void> {

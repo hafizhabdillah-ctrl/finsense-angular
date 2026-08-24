@@ -11,22 +11,22 @@
       "projectType": "application",
       "schematics": {},
       "root": "",
-      "sourceRoot": "frontend/src",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "frontend/src/main.ts",
+            "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "frontend/public"
+                "input": "public"
               }
             ],
             "styles": [
-              "frontend/src/styles.css"
+              "src/styles.css"
             ]
           },
           "configurations": {

@@ -2,6 +2,19 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.5.
 
+## Finsense backend
+
+The Angular app uses the Prisma/Express backend in `angular/backend`.
+Start it in a separate terminal before using authenticated features:
+
+```bash
+cd backend
+npm start
+npm run dev
+```
+
+The API is available at `http://localhost:3000/api`.
+
 ## Development server
 
 To start a local development server, run:

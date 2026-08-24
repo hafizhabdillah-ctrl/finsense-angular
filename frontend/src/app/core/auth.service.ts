@@ -23,16 +23,20 @@ export interface UmkmProfile {
 export class AuthService {
   readonly user = signal<User | null>(null);
   readonly loading = signal(true);
+  private readonly sessionReady: Promise<void>;
 
   constructor(private readonly http: HttpClient) {
-    this.restoreSession();
+    this.sessionReady = this.restoreSession();
   }
+
+  waitForSession(): Promise<void> { return this.sessionReady; }
 
   async login(email: string, password: string): Promise<void> {
     const result = await firstValueFrom(this.http.post<{ accessToken: string; refreshToken: string; user: User }>(`${environment.apiUrl}/auth/login`, { email, password }));
     localStorage.setItem('accessToken', result.accessToken);
     localStorage.setItem('refreshToken', result.refreshToken);
     this.user.set(result.user);
+    this.loading.set(false);
   }
 
   async register(email: string, password: string, fullName: string): Promise<void> {

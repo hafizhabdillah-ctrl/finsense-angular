@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService, UmkmProfile } from '../core/auth.service';
 
@@ -18,6 +18,7 @@ export class SettingsComponent implements OnInit {
   userForm = { full_name: '', email: '' };
   umkmForm: UmkmProfile = {};
   private readonly auth = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void { this.loadProfiles(); }
 
@@ -32,6 +33,7 @@ export class SettingsComponent implements OnInit {
       this.error = 'Gagal memuat data pengaturan.';
     } finally {
       this.loading = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -39,8 +41,8 @@ export class SettingsComponent implements OnInit {
     this.saving = true;
     this.error = '';
     try { await this.auth.updateProfile(this.userForm.full_name.trim(), this.userForm.email.trim()); this.saved.emit(); this.closed.emit(); }
-    catch (error: any) { this.error = error?.error?.error || 'Gagal memperbarui profil user.'; }
-    finally { this.saving = false; }
+    catch (error: any) { this.error = error?.error?.error || 'Gagal memperbarui profil user.'; this.cdr.markForCheck(); }
+    finally { this.saving = false; this.cdr.markForCheck(); }
   }
 
   async saveUmkm(): Promise<void> {
@@ -49,7 +51,7 @@ export class SettingsComponent implements OnInit {
     try {
       await this.auth.updateUmkmProfile({ ...this.umkmForm, monthly_revenue_est: this.umkmForm.monthly_revenue_est ? Number(this.umkmForm.monthly_revenue_est) : null, employee_count: this.umkmForm.employee_count ? Number(this.umkmForm.employee_count) : null });
       this.saved.emit(); this.closed.emit();
-    } catch (error: any) { this.error = error?.error?.error || 'Gagal memperbarui profil UMKM.'; }
-    finally { this.saving = false; }
+    } catch (error: any) { this.error = error?.error?.error || 'Gagal memperbarui profil UMKM.'; this.cdr.markForCheck(); }
+    finally { this.saving = false; this.cdr.markForCheck(); }
   }
 }
