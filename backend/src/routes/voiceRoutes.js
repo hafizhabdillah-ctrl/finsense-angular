@@ -4,7 +4,7 @@ const router = express.Router();
 const voiceController = require('../controllers/voiceController');
 
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: '/tmp/uploads/' });
 
 router.post('/voice', upload.single('audio'), voiceController.processVoice);
 

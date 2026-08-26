@@ -177,6 +177,11 @@ const updateStockLogSchema = Joi.object({
   note: Joi.string().max(255).optional().allow('', null),
 });
 
+const checkoutSchema = Joi.object({
+  items: Joi.array().items(transactionItemSchema).required(),
+  total_amount: Joi.number().positive().precision(2).required(),
+});
+
 // ==================== EXPORTS ====================
 module.exports = {
   // Auth
@@ -222,6 +227,7 @@ module.exports = {
     updateStockLogSchema.validate(data, { abortEarly: false }),
 
   // POS
+  
   validateCheckout: (data) =>
     checkoutSchema.validate(data, { abortEarly: false }),
 };

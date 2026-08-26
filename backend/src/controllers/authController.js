@@ -1,9 +1,26 @@
-const bcrypt = require('bcrypt');
+console.log('[Debug authController] 1. starting authController');
+const bcrypt = require('bcryptjs');
+console.log('[Debug authController] 2. bcrypt loaded');
+
 const jwt = require('jsonwebtoken');
+console.log('[Debug authController] 3. jwt loaded');
+
 const prisma = require('../config/prisma');
-const { v4: uuidv4 } = require('uuid');
+console.log('[Debug authController] 4. prisma loaded');
+
+const { randomUUID: uuidv4 } = require('crypto'); 
 const crypto = require('crypto');
-const { sendResetEmail } = require('../services/emailService');
+
+let sendResetEmail;
+try {
+  sendResetEmail = require('../services/emailService').sendResetEmail;
+  console.log('[Debug authController] 5. emailService loaded');
+} catch (err) {
+  console.error('[Debug authController] Failed to load emailService:', err.message);
+  sendResetEmail = async () => {
+    throw new Error('Email service is currently unavailable.');
+  };
+}
 
 function generateAccessToken(userId) {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' });

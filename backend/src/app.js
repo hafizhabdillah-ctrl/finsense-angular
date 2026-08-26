@@ -12,6 +12,23 @@ const voiceRoutes = require('./routes/voiceRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 
 const app = express();
+
+const unwrapRoute = (route, name = 'unknown') => {
+  console.log(`[Debug Route] '${name}' keys:`, Object.keys(route || {}));
+
+  let resolved = route;
+  if (resolved && typeof resolved !== 'function') {
+    resolved = resolved.default || resolved.router || resolved;
+  }
+
+  if (typeof resolved !== 'function') {
+    throw new Error(
+      `[Route Error] Route '${name}' is type '${typeof resolved}'. Received keys: ${JSON.stringify(Object.keys(route || {}))}`
+    );
+  }
+  return resolved;
+};
+
 app.use(
   cors({
     origin: '*',
@@ -26,16 +43,16 @@ app.use((req, res, next) => {
   console.log(`[Express] ${req.method} ${req.url}`);
   next();
 });
-app.use('/api/auth', authRoutes);
-app.use('/api/umkm', umkmRoutes);
-app.use('/api/transactions', transactionRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/chat', chatRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/stock-logs', stockLogRoutes);
-app.use('/api/debts', debtRoutes);
-app.use('/api', voiceRoutes);
-app.use('/api/ai', aiRoutes);
+app.use('/api/auth', unwrapRoute(authRoutes, 'authRoutes'));
+app.use('/api/umkm', unwrapRoute(umkmRoutes, 'umkmRoutes'));
+app.use('/api/transactions', unwrapRoute(transactionRoutes, 'transactionRoutes'));
+app.use('/api/categories', unwrapRoute(categoryRoutes, 'categoryRoutes'));
+app.use('/api/chat', unwrapRoute(chatRoutes, 'chatRoutes'));
+app.use('/api/products', unwrapRoute(productRoutes, 'productRoutes'));
+app.use('/api/stock-logs', unwrapRoute(stockLogRoutes, 'stockLogRoutes'));
+app.use('/api/debts', unwrapRoute(debtRoutes, 'debtRoutes'));
+app.use('/api', unwrapRoute(voiceRoutes, 'voiceRoutes'));
+app.use('/api/ai', unwrapRoute(aiRoutes, 'aiRoutes'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
 
