@@ -1,6 +1,19 @@
 const prisma = require('../config/prisma');
 
-// GET /stock-logs - semua log stok milik user
+exports.getStockLogById = async (req, res) => {
+  try {
+    const log = await prisma.stockLog.findFirst({
+      where: { id: req.params.id, user_id: req.userId },
+      include: { product: { select: { name: true, sku: true } } },
+    });
+    if (!log) return res.status(404).json({ error: 'Log not found' });
+    res.json(log);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.getStockLogs = async (req, res) => {
   try {
     const userId = req.userId;

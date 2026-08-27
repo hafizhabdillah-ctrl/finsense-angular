@@ -10,6 +10,7 @@ const validate = require('../middleware/validate');
 
 router.use(auth);
 router.get('/', stockLogController.getStockLogs);
+router.get('/:id', stockLogController.getStockLogById);
 router.post(
   '/',
   validate(validateCreateStockLog),
