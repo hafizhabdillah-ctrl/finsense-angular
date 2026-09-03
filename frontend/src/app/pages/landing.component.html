@@ -1,0 +1,123 @@
+<div class="min-h-screen bg-black font-sans text-slate-100">
+  <nav class="sticky top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-xl">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <div class="flex h-20 items-center justify-between">
+        <button (click)="scrollToSection('produk')" class="flex items-center text-xl font-bold tracking-tight md:text-2xl">
+          <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="mr-2">
+            <path d="M12 2 L21 5.5 L19.5 17 L12 22 L4.5 17 L3 5.5 Z" fill="#DD0031"/>
+            <path d="M12 2 L21 5.5 L19.5 17 L12 22 Z" fill="#C3002F"/>
+            <path d="M12 6 L17 17.5 H14.9 L13.9 15 H10.1 L9.1 17.5 H7 Z M12 9.3 L10.7 13.2 H13.3 Z" fill="#FFFFFF"/>
+          </svg>
+          Fin<span class="text-orange-500">Sense</span>
+        </button>
+        <div class="hidden items-center gap-8 text-sm font-medium text-slate-300 md:flex">
+          <button (click)="scrollToSection('produk')" class="transition-colors hover:text-orange-500">Produk</button>
+          <button (click)="scrollToSection('fitur')" class="transition-colors hover:text-orange-500">Fitur</button>
+        </div>
+        <div class="flex items-center gap-2 text-sm font-semibold sm:gap-4">
+          <a routerLink="/login" class="px-2 py-2 text-slate-300 transition-colors hover:text-white sm:px-3">Masuk</a>
+          <a routerLink="/register" class="rounded-lg bg-orange-500 px-4 py-2.5 text-black shadow-[0_8px_24px_rgba(249,115,22,0.25)] transition hover:bg-orange-400 sm:px-5">Daftar</a>
+        </div>
+      </div>
+      <div class="flex justify-center gap-5 border-t border-white/10 py-3 text-xs font-medium text-slate-300 md:hidden">
+        <button (click)="scrollToSection('produk')">Produk</button>
+        <button (click)="scrollToSection('fitur')">Fitur</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="produk" class="relative overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_80%_20%,rgba(249,115,22,0.18),transparent_32%),linear-gradient(135deg,#000000_0%,#1a1a1a_55%,#171717_100%)] px-5 py-16 sm:px-8 md:py-24 lg:py-28">
+      <div class="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div class="text-center lg:text-left">
+          <p class="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-orange-500">Platform bisnis UMKM</p>
+          <h1 class="max-w-2xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-7xl">Cerdas mengelola bisnis, <span class="text-orange-500">siap bertumbuh.</span></h1>
+          <p class="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">Kendalikan penjualan, stok, dan keuangan bisnis Anda dari satu dashboard yang dirancang untuk UMKM.</p>
+          <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+            <a routerLink="/register" class="rounded-lg bg-orange-500 px-6 py-3 font-bold text-black shadow-lg transition hover:-translate-y-0.5 hover:bg-orange-400">Mulai Sekarang <span aria-hidden="true">-&gt;</span></a>
+            <button (click)="scrollToSection('fitur')" class="rounded-lg border border-white/20 px-6 py-3 font-semibold text-white transition hover:border-orange-500 hover:text-orange-500">Lihat Fitur</button>
+          </div>
+          <div class="mt-10 flex justify-center gap-8 text-left text-xs text-slate-400 lg:justify-start">
+            <span><strong class="block text-lg text-white">5+</strong>modul bisnis</span>
+            <span><strong class="block text-lg text-white">1</strong>terminal kasir</span>
+            <span><strong class="block text-lg text-white">1</strong>platform terpadu</span>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="absolute -inset-5 rounded-3xl bg-orange-500/10 blur-3xl"></div>
+          <div class="relative rounded-2xl border border-white/20 bg-white/5 p-8 shadow-2xl backdrop-blur-sm sm:p-10">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <span class="text-sm font-semibold text-white">Ringkasan Hari Ini</span>
+              <span class="rounded-full bg-orange-500/15 px-3 py-1 text-xs font-semibold text-orange-400">Live</span>
+            </div>
+            <div class="mt-6 grid grid-cols-2 gap-4">
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p class="text-xs text-slate-400">Pendapatan</p>
+                <p class="mt-1 text-xl font-bold text-white">Rp 4,2jt</p>
+              </div>
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p class="text-xs text-slate-400">Transaksi POS</p>
+                <p class="mt-1 text-xl font-bold text-white">128</p>
+              </div>
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p class="text-xs text-slate-400">Stok Menipis</p>
+                <p class="mt-1 text-xl font-bold text-orange-400">6 item</p>
+              </div>
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p class="text-xs text-slate-400">Piutang Aktif</p>
+                <p class="mt-1 text-xl font-bold text-white">Rp 850rb</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fitur" class="bg-neutral-900 px-5 py-20 sm:px-8 md:py-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-12 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p class="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-orange-500">Satu ekosistem</p>
+            <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Semua yang bisnis Anda butuhkan.</h2>
+          </div>
+          <p class="max-w-sm text-sm leading-7 text-slate-400">Dari transaksi pertama hingga keputusan strategis, FinSense membantu Anda tetap memegang kendali.</p>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          @for (feature of features; track feature.title; let index = $index) {
+            <article class="group flex flex-col border border-white/10 bg-neutral-800 p-5 transition duration-300 hover:-translate-y-1 hover:border-orange-500/60 hover:bg-neutral-700" [class.lg:col-span-2]="index === 0">
+              <div class="mb-5 flex items-center justify-between">
+                <span class="text-xs font-bold text-orange-500">0{{ index + 1 }}</span>
+                <span class="h-px w-10 bg-orange-500/30"></span>
+              </div>
+              <h3 class="text-lg font-bold text-white">{{ feature.title }}</h3>
+              <div class="my-6 flex h-28 w-full items-center justify-center text-orange-500">
+                @switch (feature.icon) {
+                  @case ('dashboard') {
+                    <svg viewBox="0 0 24 24" fill="none" class="h-16 w-16" stroke="currentColor" stroke-width="1.4"><path d="M4 19h16" stroke-linecap="round"/><rect x="6" y="11" width="3" height="7" rx="0.6"/><rect x="10.5" y="7" width="3" height="11" rx="0.6"/><rect x="15" y="13" width="3" height="5" rx="0.6"/></svg>
+                  }
+                  @case ('stock') {
+                    <svg viewBox="0 0 24 24" fill="none" class="h-16 w-16" stroke="currentColor" stroke-width="1.4"><path d="M4 8l8-4 8 4v8l-8 4-8-4V8Z" stroke-linejoin="round"/><path d="M4 8l8 4 8-4M12 12v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  }
+                  @case ('pos') {
+                    <svg viewBox="0 0 24 24" fill="none" class="h-16 w-16" stroke="currentColor" stroke-width="1.4"><rect x="4" y="5" width="16" height="10" rx="1.2"/><path d="M8 19h8M9 15v4M15 15v4" stroke-linecap="round"/><path d="M8 9h8" stroke-linecap="round"/></svg>
+                  }
+                  @case ('debt') {
+                    <svg viewBox="0 0 24 24" fill="none" class="h-16 w-16" stroke="currentColor" stroke-width="1.4"><path d="M3 13l4-4 3 3 5-5 6 6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6h6v6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  }
+                  @case ('log') {
+                    <svg viewBox="0 0 24 24" fill="none" class="h-16 w-16" stroke="currentColor" stroke-width="1.4"><rect x="5" y="3" width="14" height="18" rx="1.4"/><path d="M9 8h6M9 12h6M9 16h4" stroke-linecap="round"/></svg>
+                  }
+                }
+              </div>
+              <p class="mt-auto text-sm leading-6 text-slate-400">{{ feature.text }}</p>
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-black px-5 py-7 text-center text-sm text-slate-400 sm:px-8">
+    <p><span class="font-bold text-white">Fin<span class="text-orange-500">Sense</span></span> &copy; 2026 - Coding Camp 2026</p>
+  </footer>
+</div>

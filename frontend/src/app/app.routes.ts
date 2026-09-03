@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth.guard';
+import { LandingComponent } from './pages/landing.component';
 import { LoginComponent } from './pages/auth/login.component';
 import { RegisterComponent } from './pages/auth/register.component';
 import { DashboardComponent } from './pages/dashboard.component';
@@ -8,7 +9,7 @@ import { NewItemComponent } from './pages/new-item.component';
 import { DetailComponent } from './pages/detail.component';
 
 export const routes: Routes = [
-	{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+	{ path: '', component: LandingComponent },
 	{ path: 'login', component: LoginComponent },
 		{ path: 'register', component: RegisterComponent },
 	{ path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
