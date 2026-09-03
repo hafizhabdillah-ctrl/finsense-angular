@@ -70,9 +70,9 @@ export class FeatureComponent implements OnInit {
     { label: 'Dashboard', path: '/dashboard', icon: '▦' },
     { label: 'Catatan Keuangan', path: '/transactions', icon: '▣' },
     { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
+    { label: 'POS Terminal', path: '/pos', icon: '▥' },
     { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
     { label: 'Log Inventori', path: '/logs', icon: '☷' },
-    { label: 'Kasir POS', path: '/pos', icon: '▥' },
   ];
   products: Product[] = [];
   logs: StockLog[] = [];
