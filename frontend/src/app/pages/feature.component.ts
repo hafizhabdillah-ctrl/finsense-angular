@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../core/environment';
 import { AuthService } from '../core/auth.service';
 import { SettingsComponent } from '../components/settings.component';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin, of, switchMap } from 'rxjs';
 
 interface Product {
   id: string;
@@ -47,6 +47,12 @@ interface Debt {
   note?: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+  type?: 'income' | 'expense';
+}
+
 @Component({
   selector: 'app-feature',
   standalone: true,
@@ -66,16 +72,20 @@ export class FeatureComponent implements OnInit {
     { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
     { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
     { label: 'Log Inventori', path: '/logs', icon: '☷' },
+    { label: 'Kasir POS', path: '/pos', icon: '▥' },
   ];
   products: Product[] = [];
   logs: StockLog[] = [];
   transactions: Transaction[] = [];
   debts: Debt[] = [];
+  categories: Category[] = [];
   cart: Product[] = [];
   search = '';
   loading = true;
   error = '';
   settingsOpen = false;
+  checkingOut = false;
+  checkoutError = '';
 
   ngOnInit(): void {
     this.activateFeature(this.route.snapshot.data['title'] as string);
@@ -92,14 +102,17 @@ export class FeatureComponent implements OnInit {
       this.logs = [];
       this.transactions = [];
       this.debts = [];
+      this.cart = [];
       this.search = '';
       this.error = '';
+      this.checkoutError = '';
       this.loading = true;
 
       if (this.title === 'Stok Produk') this.loadProducts();
       if (this.title === 'Log Aktivitas') this.loadLogs();
       if (this.title === 'Transaksi') this.loadTransactions();
       if (this.title === 'Utang Piutang') this.loadDebts();
+      if (this.title === 'Point of Sale') { this.loadProducts(); this.loadCategories(); }
   }
 
   get filteredProducts(): Product[] {
@@ -119,8 +132,58 @@ export class FeatureComponent implements OnInit {
   get totalExpense(): number { return this.transactions.filter((item) => item.type === 'expense').reduce((total, item) => total + Number(item.amount), 0); }
   get totalDebt(): number { return this.debts.reduce((total, item) => total + Number(item.total_debt) - Number(item.paid_amount || 0), 0); }
   cartTotal(): number { return this.cart.reduce((total, product) => total + (product.price || 0), 0); }
-  addToCart(product: Product): void { if (product.stock > 0) this.cart = [...this.cart, product]; }
-  removeFromCart(index: number): void { this.cart = this.cart.filter((_, itemIndex) => itemIndex !== index); }
+  addToCart(product: Product): void {
+    if (product.stock > 0) {
+      product.stock -= 1;
+      this.cart = [...this.cart, product];
+    }
+  }
+  removeFromCart(index: number): void {
+    const item = this.cart[index];
+    if (item) item.stock += 1;
+    this.cart = this.cart.filter((_, itemIndex) => itemIndex !== index);
+  }
+
+  checkout(): void {
+    if (!this.cart.length || this.checkingOut) return;
+    const category = this.categories.find((item) => item.type === 'income') || this.categories[0];
+    if (!category) { this.checkoutError = 'Kategori transaksi belum tersedia.'; return; }
+
+    this.checkingOut = true;
+    this.checkoutError = '';
+    const operator = this.auth.user()?.full_name || this.auth.user()?.email || 'kasir';
+    const amount = this.cartTotal();
+    const stockRequests = this.cart.map((item) => this.http.post(`${environment.apiUrl}/stock-logs`, {
+      product_id: item.id,
+      type: 'out',
+      quantity: 1,
+      operator,
+      status: 'completed',
+    }));
+
+    forkJoin(stockRequests.length ? stockRequests : [of(null)]).pipe(
+      switchMap(() => this.http.post(`${environment.apiUrl}/transactions`, {
+        category_id: category.id,
+        type: 'income',
+        amount,
+        description: 'Penjualan POS Kasir',
+        source: 'pos',
+      })),
+    ).subscribe({
+      next: () => {
+        this.cart = [];
+        this.checkingOut = false;
+        this.checkoutError = '';
+        this.loadProducts();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.checkingOut = false;
+        this.checkoutError = 'Gagal memproses transaksi. Silakan coba lagi.';
+        this.cdr.markForCheck();
+      },
+    });
+  }
   openDetail(id: string): void {
     const path = this.title === 'Stok Produk' ? 'stocks' : this.title === 'Transaksi' ? 'transactions' : this.title === 'Utang Piutang' ? 'debts' : 'logs';
     this.router.navigate(['/', path, id]);
@@ -144,6 +207,13 @@ export class FeatureComponent implements OnInit {
     this.http.get<Transaction[]>(`${environment.apiUrl}/transactions`).pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); })).subscribe({
       next: (transactions) => { this.transactions = transactions; this.cdr.markForCheck(); },
       error: () => { this.error = 'Gagal memuat catatan keuangan.'; this.cdr.markForCheck(); },
+    });
+  }
+
+  private loadCategories(): void {
+    this.http.get<Category[]>(`${environment.apiUrl}/categories`).subscribe({
+      next: (categories) => { this.categories = categories; this.cdr.markForCheck(); },
+      error: () => { this.cdr.markForCheck(); },
     });
   }
 

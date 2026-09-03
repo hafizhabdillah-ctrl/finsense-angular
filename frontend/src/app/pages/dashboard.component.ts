@@ -52,6 +52,7 @@ export class DashboardComponent {
     { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
     { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
     { label: 'Log Inventori', path: '/logs', icon: '☷' },
+    { label: 'Kasir POS', path: '/pos', icon: '▥' },
   ];
   settingsOpen = false;
   transactions: DashboardTransaction[] = [];
@@ -93,7 +94,6 @@ export class DashboardComponent {
   }
 
   get weeklyMax(): number { return Math.max(...this.weeklySales.map((item) => item.amount), 1); }
-  routerBack(): void { this.router.navigate(['/dashboard']); }
 
   private loadDashboardData(): void {
     forkJoin({

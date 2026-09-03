@@ -17,6 +17,7 @@ export const routes: Routes = [
 	{ path: 'transactions/:id', component: DetailComponent, canActivate: [authGuard], data: { type: 'transaction', title: 'Detail Transaksi' } },
 	{ path: 'stocks', component: FeatureComponent, canActivate: [authGuard], data: { title: 'Stok Produk' } },
 	{ path: 'stocks/:id', component: DetailComponent, canActivate: [authGuard], data: { type: 'product', title: 'Detail Produk' } },
+	{ path: 'pos', component: FeatureComponent, canActivate: [authGuard], data: { title: 'Point of Sale' } },
 	{ path: 'debts', component: FeatureComponent, canActivate: [authGuard], data: { title: 'Utang Piutang' } },
 	{ path: 'debts/:id', component: DetailComponent, canActivate: [authGuard], data: { type: 'debt', title: 'Detail Hutang' } },
 	{ path: 'logs', component: FeatureComponent, canActivate: [authGuard], data: { title: 'Log Aktivitas' } },

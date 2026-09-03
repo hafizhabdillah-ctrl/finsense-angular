@@ -1,7 +1,13 @@
 <div class="workspace">
   <aside class="sidebar">
     <div class="brand text-3xl">
-      <span class="brand-mark text-sky-900">↗</span>FinSense
+      <span class="brand-mark">
+        <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2 L21 5.5 L19.5 17 L12 22 L4.5 17 L3 5.5 Z" fill="#DD0031"/>
+          <path d="M12 2 L21 5.5 L19.5 17 L12 22 Z" fill="#C3002F"/>
+          <path d="M12 6 L17 17.5 H14.9 L13.9 15 H10.1 L9.1 17.5 H7 Z M12 9.3 L10.7 13.2 H13.3 Z" fill="#FFFFFF"/>
+        </svg>
+      </span>FinSense
     </div>
     <a class="new-transaction" routerLink="/new">⊕ 
       <span>New Transaction</span>
@@ -231,7 +237,6 @@
           <div class="voice-box">
             <strong>"Pilih produk untuk memulai transaksi"</strong>
             <button class="mic">♩</button>
-            <small>Input suara tersedia di aplikasi React</small>
           </div>
           <h2>Produk Sering Dibeli</h2>
           <div class="product-grid">
@@ -256,6 +261,8 @@
                   <span>Total</span>
                   <strong>{{ cartTotal() | currency:'IDR':'symbol':'1.0-0' }}</strong>
                 </div>
+                @if (checkoutError) { <p class="error px-1 text-[11px] text-red-600">{{ checkoutError }}</p> }
+                <button class="m-1 w-[calc(100%-8px)]" [disabled]="!cart.length || checkingOut" (click)="checkout()">{{ checkingOut ? 'Memproses...' : 'Bayar' }}</button>
             </aside>
         </div>
     }
