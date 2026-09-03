@@ -6,6 +6,8 @@ import { finalize, forkJoin } from 'rxjs';
 import { environment } from '../core/environment';
 import { AuthService } from '../core/auth.service';
 import { SettingsComponent } from '../components/settings.component';
+import { LucideAngularModule } from 'lucide-angular';
+import { NAV_LINKS } from '../core/nav-icons';
 
 interface ProductOption { id: string; name: string; sku?: string; stock: number; price?: number; }
 interface CategoryOption { id: number; name: string; type: string; }
@@ -15,7 +17,7 @@ type ItemType = 'product' | 'transaction' | 'pos' | 'debt' | 'log';
 @Component({
   selector: 'app-new-item',
   standalone: true,
-  imports: [FormsModule, RouterLink, RouterLinkActive, SettingsComponent],
+  imports: [FormsModule, RouterLink, RouterLinkActive, SettingsComponent, LucideAngularModule],
   templateUrl: './new-item.component.html',
 })
 export class NewItemComponent implements OnInit {
@@ -24,14 +26,7 @@ export class NewItemComponent implements OnInit {
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly auth = inject(AuthService);
-  readonly links = [
-    { label: 'Dashboard', path: '/dashboard', icon: '▦' },
-    { label: 'Catatan Keuangan', path: '/transactions', icon: '▣' },
-    { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
-    { label: 'POS Terminal', path: '/pos', icon: '▥' },
-    { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
-    { label: 'Log Inventori', path: '/logs', icon: '☷' },
-  ];
+  readonly links = NAV_LINKS;
   readonly tabs: { key: ItemType; label: string }[] = [
     { key: 'product', label: 'Produk' },
     { key: 'transaction', label: 'Transaksi' },
@@ -44,6 +39,7 @@ export class NewItemComponent implements OnInit {
   submitting = false;
   loadingOptions = true;
   settingsOpen = false;
+  sidebarOpen = false;
   error = '';
   products: ProductOption[] = [];
   categories: CategoryOption[] = [];

@@ -6,6 +6,8 @@ import { AuthService } from '../core/auth.service';
 import { SettingsComponent } from '../components/settings.component';
 import { environment } from '../core/environment';
 import { forkJoin } from 'rxjs';
+import { LucideAngularModule } from 'lucide-angular';
+import { NAV_LINKS } from '../core/nav-icons';
 
 interface DashboardTransaction {
   id: string;
@@ -38,7 +40,7 @@ interface BestSeller {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, SettingsComponent, CurrencyPipe],
+  imports: [RouterLink, RouterLinkActive, SettingsComponent, CurrencyPipe, LucideAngularModule],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
@@ -46,15 +48,9 @@ export class DashboardComponent {
   readonly auth = inject(AuthService);
   readonly http = inject(HttpClient);
   readonly router = inject(Router);
-  readonly links = [
-    { label: 'Dashboard', path: '/dashboard', icon: '▦' },
-    { label: 'Catatan Keuangan', path: '/transactions', icon: '▣' },
-    { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
-    { label: 'POS Terminal', path: '/pos', icon: '▥' },
-    { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
-    { label: 'Log Inventori', path: '/logs', icon: '☷' },
-  ];
+  readonly links = NAV_LINKS;
   settingsOpen = false;
+  sidebarOpen = false;
   transactions: DashboardTransaction[] = [];
   products: DashboardProduct[] = [];
   debts: DashboardDebt[] = [];

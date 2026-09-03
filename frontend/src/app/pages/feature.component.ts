@@ -7,6 +7,8 @@ import { environment } from '../core/environment';
 import { AuthService } from '../core/auth.service';
 import { SettingsComponent } from '../components/settings.component';
 import { finalize, forkJoin, of, switchMap } from 'rxjs';
+import { LucideAngularModule } from 'lucide-angular';
+import { NAV_LINKS } from '../core/nav-icons';
 
 interface Product {
   id: string;
@@ -56,7 +58,7 @@ interface Category {
 @Component({
   selector: 'app-feature',
   standalone: true,
-  imports: [FormsModule, RouterLink, RouterLinkActive, DatePipe, CurrencyPipe, SettingsComponent],
+  imports: [FormsModule, RouterLink, RouterLinkActive, DatePipe, CurrencyPipe, SettingsComponent, LucideAngularModule],
   templateUrl: './feature.component.html',
 })
 export class FeatureComponent implements OnInit {
@@ -66,14 +68,7 @@ export class FeatureComponent implements OnInit {
   readonly http = inject(HttpClient);
   readonly router = inject(Router);
   readonly auth = inject(AuthService);
-  readonly links = [
-    { label: 'Dashboard', path: '/dashboard', icon: '▦' },
-    { label: 'Catatan Keuangan', path: '/transactions', icon: '▣' },
-    { label: 'Manajemen Stok', path: '/stocks', icon: '▤' },
-    { label: 'POS Terminal', path: '/pos', icon: '▥' },
-    { label: 'Hutang & Pelanggan', path: '/debts', icon: '♟' },
-    { label: 'Log Inventori', path: '/logs', icon: '☷' },
-  ];
+  readonly links = NAV_LINKS;
   products: Product[] = [];
   logs: StockLog[] = [];
   transactions: Transaction[] = [];
@@ -84,6 +79,7 @@ export class FeatureComponent implements OnInit {
   loading = true;
   error = '';
   settingsOpen = false;
+  sidebarOpen = false;
   checkingOut = false;
   checkoutError = '';
 
