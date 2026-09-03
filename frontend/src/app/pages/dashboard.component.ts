@@ -62,6 +62,10 @@ export class DashboardComponent {
     this.loadDashboardData();
   }
 
+  get today(): string {
+    return new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
   get todayIncome(): number {
     return this.todayTransactions.filter((item) => item.type === 'income').reduce((total, item) => total + Number(item.amount), 0);
   }

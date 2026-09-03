@@ -121,11 +121,25 @@ export class FeatureComponent implements OnInit {
     return this.logs.filter((log) => !query || log.product?.name.toLowerCase().includes(query) || log.product?.sku?.toLowerCase().includes(query));
   }
 
+  get today(): string {
+    return new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
   get lowStock(): number { return this.products.filter((product) => product.stock <= product.min_stock).length; }
+  private isToday(dateValue: string): boolean { return new Date(dateValue).toDateString() === new Date().toDateString(); }
   get totalStockIn(): number { return this.logs.filter((log) => log.type === 'in').reduce((total, log) => total + log.quantity, 0); }
   get totalStockOut(): number { return this.logs.filter((log) => log.type === 'out').reduce((total, log) => total + log.quantity, 0); }
+  get todayStockIn(): number { return this.logs.filter((log) => log.type === 'in' && this.isToday(log.created_at)).reduce((total, log) => total + log.quantity, 0); }
+  get todayStockOut(): number { return this.logs.filter((log) => log.type === 'out' && this.isToday(log.created_at)).reduce((total, log) => total + log.quantity, 0); }
   get totalIncome(): number { return this.transactions.filter((item) => item.type === 'income').reduce((total, item) => total + Number(item.amount), 0); }
   get totalExpense(): number { return this.transactions.filter((item) => item.type === 'expense').reduce((total, item) => total + Number(item.amount), 0); }
+  get totalTransactionsThisMonth(): number {
+    const now = new Date();
+    return this.transactions.filter((item) => {
+      const date = new Date(item.transaction_date);
+      return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+    }).length;
+  }
   get totalDebt(): number { return this.debts.reduce((total, item) => total + Number(item.total_debt) - Number(item.paid_amount || 0), 0); }
   cartTotal(): number { return this.cart.reduce((total, product) => total + (product.price || 0), 0); }
   addToCart(product: Product): void {
