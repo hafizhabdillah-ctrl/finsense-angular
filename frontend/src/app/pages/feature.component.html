@@ -37,7 +37,7 @@
     @if (title === 'Stok Produk') {
       <section class="page-heading">
         <h1 class="font-bold">Manajemen Stok</h1>
-        <button routerLink="/new">⊕ Tambah Barang</button>
+        <button routerLink="/new" [queryParams]="{ type: 'product' }">⊕ Tambah Barang</button>
       </section>
 
       <section class="stat-grid">
@@ -90,7 +90,7 @@
     @if (title === 'Log Aktivitas') {
       <section class="page-heading">
         <h1 class="font-bold">Log Barang</h1>
-        <button routerLink="/new">⊕ Tambah Log</button>
+        <button routerLink="/new" [queryParams]="{ type: 'log' }">⊕ Tambah Log</button>
       </section>
       <section class="stat-grid">
         <article>
@@ -142,7 +142,7 @@
       <section class="mx-auto px-6 py-5 font-poppins">
         <div class="flex items-center justify-between">
           <h1 class="text-[22px] font-bold text-slate-950">Catatan keuangan</h1>
-          <button routerLink="/new" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Transaksi</button>
+          <button routerLink="/new" [queryParams]="{ type: 'transaction' }" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Transaksi</button>
         </div>
         <section class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           <article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
@@ -189,7 +189,7 @@
       <section class="mx-auto px-6 py-5 font-poppins">
         <div class="flex items-center justify-between">
           <h1 class="text-[22px] font-bold text-slate-950">Catatan Hutang</h1>
-          <button routerLink="/new" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Hutang baru</button>
+          <button routerLink="/new" [queryParams]="{ type: 'debt' }" class="rounded-md bg-[#063c57] px-4 py-2 text-xs font-semibold text-white">⊕ Tambah Hutang baru</button>
         </div>
         <article class="mt-4 w-full rounded-md border border-slate-200 bg-white p-3 shadow-sm md:w-1/3">
           <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PIUTANG AKTIF</small>
@@ -230,7 +230,7 @@
     @if (title === 'Point of Sale') {
       <section class="page-heading">
         <h1 class="font-bold">Terminal Kasir</h1>
-        <button routerLink="/new">⊕ Transaksi Baru</button>
+        <button routerLink="/new" [queryParams]="{ type: 'pos' }">⊕ Transaksi Baru</button>
       </section>
       <div class="pos-layout">
         <section class="pos-main">
