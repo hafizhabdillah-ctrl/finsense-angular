@@ -11,7 +11,7 @@
           <path d="M12 6 L17 17.5 H14.9 L13.9 15 H10.1 L9.1 17.5 H7 Z M12 9.3 L10.7 13.2 H13.3 Z" fill="#FFFFFF"/>
         </svg>
       </span>
-      <span class="px-2 py-1 text-2xl font-bold text-[#101820] md:text-3xl">Fin<span class="text-orange-300">Sense</span></span>
+      <span class="px-2 py-1 text-2xl font-bold text-[#101820] md:text-3xl">Fin<span class="text-orange-400">Sense</span></span>
     </div>
     <div class="mx-4 mt-2">
       <a routerLink="/new" (click)="sidebarOpen = false" class="flex w-full items-center justify-center gap-3 rounded-lg bg-sky-950 py-3 font-bold text-white no-underline transition-colors hover:bg-sky-900">
@@ -119,10 +119,10 @@
       </section>
       <section class="stat-grid grid-cols-2">
         <article>
-          <small>STOK MASUK (HARI INI)</small><strong>{{ todayStockIn }} <em>Barang</em></strong>
+          <small>STOK MASUK</small><strong>{{ todayStockIn }} <em>Barang</em></strong>
         </article>
         <article>
-          <small>STOK KELUAR (HARI INI)</small><strong>{{ todayStockOut }} <em>Barang</em></strong>
+          <small>STOK KELUAR</small><strong>{{ todayStockOut }} <em>Barang</em></strong>
         </article>
       </section>
 
@@ -170,15 +170,15 @@
         </div>
         <section class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
           <article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
-            <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PEMASUKAN BULAN INI</small>
+            <small class="text-[11px] font-bold uppercase text-slate-500">PEMASUKAN</small>
             <strong class="mt-1 block text-xl text-[#063c57]">{{ totalIncome | currency:'IDR':'symbol':'1.0-0' }}</strong>
           </article>
           <article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
-            <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL PENGELUARAN BULAN INI</small>
+            <small class="text-[11px] font-bold uppercase text-slate-500">PENGELUARAN</small>
             <strong class="mt-1 block text-xl text-[#063c57]">{{ totalExpense | currency:'IDR':'symbol':'1.0-0' }}</strong>
           </article>
           <article class="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
-            <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL TRANSAKSI (BULAN INI)</small>
+            <small class="text-[11px] font-bold uppercase text-slate-500">TOTAL TRANSAKSI</small>
             <strong class="mt-1 block text-xl text-[#063c57]">{{ totalTransactionsThisMonth }}</strong>
           </article>
         </section>
